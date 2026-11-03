@@ -3,7 +3,7 @@
   "id": "ui-test-phone-v2",
   "title": "捡手机",
   "description": "仅用于界面测试，不含剧情",
-  "revision": 4,
+  "revision": 5,
   "phone": {
     "owner": "机主",
     "passcode": "0303",
@@ -159,12 +159,76 @@
     ],
     "calendar": [
       {
-        "id": "test-item-calendar",
-        "title": "测试内容",
-        "body": "这是一条测试内容。",
-        "sender": "测试用户",
-        "kind": "text",
-        "meta": {}
+        "id": "calendar-202408111910",
+        "title": "EDG vs PRX",
+        "body": "Champions · Group Stage",
+        "time": "2024-08-11 19:10"
+      },
+      {
+        "id": "calendar-202408131500",
+        "title": "Team Practice",
+        "body": "训练、交流和赛前准备",
+        "time": "2024-08-13 15:00"
+      },
+      {
+        "id": "calendar-202408141920",
+        "title": "EDG vs TE",
+        "body": "Champions · Playoffs",
+        "time": "2024-08-14 19:20"
+      },
+      {
+        "id": "calendar-202408151400",
+        "title": "Review",
+        "body": "",
+        "time": "2024-08-15 14:00"
+      },
+      {
+        "id": "calendar-202408171700",
+        "title": "EDG vs SEN",
+        "body": "Champions · Upper Semifinal",
+        "time": "2024-08-17 17:00"
+      },
+      {
+        "id": "calendar-202408191400",
+        "title": "Scrim",
+        "body": "团队训练",
+        "time": "2024-08-19 14:00"
+      },
+      {
+        "id": "calendar-202408201330",
+        "title": "买日用品",
+        "body": "",
+        "time": "2024-08-20 13:30"
+      },
+      {
+        "id": "calendar-202408211600",
+        "title": "Team Review",
+        "body": "准备胜者组决赛",
+        "time": "2024-08-21 16:00"
+      },
+      {
+        "id": "calendar-202408231600",
+        "title": "EDG vs LEV",
+        "body": "Champions · Upper Final",
+        "time": "2024-08-23 16:00"
+      },
+      {
+        "id": "calendar-202408232230",
+        "title": "回酒店 / 吃饭",
+        "body": "没有其他安排，早点休息",
+        "time": "2024-08-23 22:30"
+      },
+      {
+        "id": "calendar-202408241230",
+        "title": "Lunch",
+        "body": "吃饭，下午自由安排",
+        "time": "2024-08-24 12:30"
+      },
+      {
+        "id": "calendar-202408241600",
+        "title": "LEV vs TH",
+        "body": "Champions · Lower Final",
+        "time": "2024-08-24 16:00"
       }
     ],
     "mail": [
