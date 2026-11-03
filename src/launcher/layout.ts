@@ -13,6 +13,7 @@ export const layoutSchema = z
   .object({
     version: z.literal(1),
     workId: z.string(),
+    authoredRevision: z.number().int().min(0).default(0),
     previewLayoutRevision: z.number().int().min(0).default(0),
     apps: workSchema.shape.apps,
     widgets: z.array(widgetSchema).max(24),
@@ -57,6 +58,7 @@ export function defaultLayout(input: Work): DeviceLayout {
   return {
     version: 1,
     workId: w.id,
+    authoredRevision: w.updatedAt,
     previewLayoutRevision: w.id === "ui-test-phone-v2" ? 1 : 0,
     apps: structuredClone(w.apps)
       .sort((a, b) => (a.id === "appstore" ? -1 : b.id === "appstore" ? 1 : 0))
@@ -117,6 +119,19 @@ export function validateLayout(raw: unknown, input: Work) {
       ...layout.order.filter((id) => !visibleApps.includes(id)),
     ];
     layout.previewLayoutRevision = 1;
+  }
+  // Apply authored installation changes once per story revision, including legacy saves.
+  // Keep the player's folders, positions, widgets and later manual installations.
+  if (layout.authoredRevision !== w.updatedAt) {
+    const authored = new Map(w.apps.map((app) => [app.id, app]));
+    for (const app of layout.apps) {
+      const source = authored.get(app.id);
+      if (source) {
+        app.installed = source.installed;
+        app.visible = source.visible;
+      }
+    }
+    layout.authoredRevision = w.updatedAt;
   }
   const entries = homeEntries(layout),
     packed = packHome(entries, layout.positions);

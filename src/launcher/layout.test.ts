@@ -117,3 +117,28 @@ it("migrates preview folders once while preserving custom folders and widgets", 
     validateLayout(migrated, w).apps.find((a) => a.id === "wechat")!.folder,
   ).toBe("作者新建文件夹");
 });
+
+
+it("syncs authored uninstall changes to saved layouts once and keeps customization", async () => {
+  const { default: story } = await import("../../stories/template/story.json");
+  const current = compileStory(story).work;
+  const old = defaultLayout(current);
+  old.authoredRevision = current.updatedAt - 1;
+  const removed = "douyin music maps wallet health find qq redbook taobao delivery forum whatsapp tiktok telegram discord youtube line snapchat facebook messenger reddit spotify netflix pinterest threads kakao".split(" ");
+  old.apps.forEach((a) => {
+    if (removed.includes(a.id)) { a.installed = true; a.visible = true; }
+  });
+  old.apps.find((a) => a.id === "clock")!.folder = "我的工具";
+  old.widgets = [{ id: "widget-keep", type: "clock", size: "small" }];
+  const migrated = validateLayout(old, current);
+  expect(migrated.apps.filter((a) => a.installed)).toHaveLength(23);
+  for (const id of removed)
+    expect(migrated.apps.find((a) => a.id === id)).toMatchObject({ installed: false, visible: false });
+  expect(migrated.apps.find((a) => a.id === "clock")!.folder).toBe("我的工具");
+  expect(migrated.widgets).toEqual(old.widgets);
+  migrated.apps.find((a) => a.id === "douyin")!.installed = true;
+  expect(validateLayout(migrated, current).apps.find((a) => a.id === "douyin")!.installed).toBe(true);
+  const legacy = JSON.parse(JSON.stringify(old));
+  delete legacy.authoredRevision;
+  expect(validateLayout(legacy, current).authoredRevision).toBe(current.updatedAt);
+});
