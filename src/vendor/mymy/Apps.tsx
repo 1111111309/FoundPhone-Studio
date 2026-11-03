@@ -699,7 +699,10 @@ export function MymyX(p: SkinProps) {
                   <div className="kzxn">
                     <b>{i.sender}</b>
                     <small>
-                      @{i.meta.handle || "user"} · {i.time.slice(-5)}
+                      @{(i.meta.handle || "user").replace(/^@/, "")} ·{" "}
+                      {/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(i.time)
+                        ? i.time.replace(/-/g, "/")
+                        : i.time.slice(-5)}
                     </small>
                     <em>
                       <MoreHorizontal size={18} />

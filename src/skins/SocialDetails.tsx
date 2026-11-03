@@ -131,7 +131,8 @@ export function SocialDetail(p: {
             <small>
               {weibo
                 ? item.time + " " + meta(item, "location")
-                : meta(item, "handle", item.sender ? "@" + item.sender : "")}
+                : "@" +
+                  meta(item, "handle", item.sender || "user").replace(/^@/, "")}
             </small>
           </div>
           {weibo ? (
