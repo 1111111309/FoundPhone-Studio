@@ -4,6 +4,24 @@ import { compileStory } from "./compiler";
 import { testStory } from "./testStory";
 const copy = () => structuredClone(example);
 describe("AI story compiler", () => {
+  it("keeps a custom lock image separate from the existing home wallpaper", () => {
+    const source = copy();
+    const image =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+    Object.assign(source.phone, { lockWallpaper: image });
+    const { work } = compileStory(source);
+    expect(work.phone.lockWallpaper).toBe(image);
+    expect(work.phone.wallpaper).toBe(source.phone.wallpaper);
+    for (const invalid of [
+      "https://example.com/wallpaper.jpg",
+      "javascript:alert(1)",
+      "data:audio/mp3;base64,AAAA",
+    ]) {
+      Object.assign(source.phone, { lockWallpaper: invalid });
+      expect(() => compileStory(source)).toThrow("锁屏壁纸");
+    }
+    expect(compileStory(copy()).work.phone.lockWallpaper).toBeUndefined();
+  });
   it("compiles stable IDs deterministically and preserves optional catalog", () => {
     const a = compileStory(copy()),
       b = compileStory(copy());

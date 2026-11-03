@@ -62,6 +62,10 @@
         },
         "notifications": {
           "type": "boolean"
+        },
+        "lockWallpaper": {
+          "type": "string",
+          "pattern": "^(?:$|data:image/(?:png|jpeg|webp|gif);base64,[a-zA-Z0-9+/=\\s]+)$"
         }
       },
       "required": [

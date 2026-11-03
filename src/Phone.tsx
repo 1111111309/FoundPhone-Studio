@@ -310,6 +310,7 @@ function PhoneRuntime({
       ),
     });
   if (!ready) return <div className="phone-loading">正在恢复进度…</div>;
+  const lockWallpaper = locked ? safeMedia(work.phone.lockWallpaper || "") : "";
   return (
     <div
       ref={shell}
@@ -319,6 +320,16 @@ function PhoneRuntime({
       <KeyboardContext.Provider value={setKeyboard}>
         <div
           className={`phone-screen wallpaper-${work.phone.wallpaper} ${locked ? "is-locked" : ""} ${app ? "in-app" : ""} ${keyboard ? "keyboard-open" : ""}`}
+          style={
+            lockWallpaper
+              ? {
+                  backgroundImage: `url("${lockWallpaper}")`,
+                  backgroundPosition: "65% center",
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                }
+              : undefined
+          }
           data-app={app}
           onDragStart={(e) => e.preventDefault()}
           onPointerDown={(e) => {
@@ -384,8 +395,8 @@ function PhoneRuntime({
             }
           }}
         >
-          <div className="wallpaper-orb orb-one" />
-          <div className="wallpaper-orb orb-two" />
+          {!lockWallpaper && <div className="wallpaper-orb orb-one" />}
+          {!lockWallpaper && <div className="wallpaper-orb orb-two" />}
           <div className="status-bar">
             <button
               onClick={() =>
