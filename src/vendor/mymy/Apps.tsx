@@ -28,6 +28,11 @@ import {
 import type { SkinProps } from "../../AppSkins";
 import { Avatar, Media } from "../../skins/shared";
 import { useSkinState } from "../../skinState";
+import {
+  commentCount,
+  repostCount,
+  formatSocialCount,
+} from "../../skins/socialMetrics";
 import { makeItem, type Item } from "../../schema";
 import "./ui.css";
 import "./adapter.css";
@@ -732,7 +737,14 @@ export function MymyX(p: SkinProps) {
                       onClick={() => p.onItem(i)}
                     >
                       <MessageCircle />
-                      {i.comments.length}
+                      {formatSocialCount(
+                        commentCount(
+                          i,
+                          Array.isArray(p.ui?.["replies-" + i.id])
+                            ? (p.ui!["replies-" + i.id] as string[]).length
+                            : 0,
+                        ),
+                      )}
                     </button>
                     <button
                       aria-label={"转发" + i.title}
@@ -740,7 +752,9 @@ export function MymyX(p: SkinProps) {
                       onClick={() => toggle(i.id, reposts, setReposts)}
                     >
                       <Repeat2 />
-                      {reposts.includes(i.id) ? 1 : 0}
+                      {formatSocialCount(
+                        repostCount(i) + (reposts.includes(i.id) ? 1 : 0),
+                      )}
                     </button>
                     <button
                       aria-label={"点赞" + i.title}
@@ -751,12 +765,14 @@ export function MymyX(p: SkinProps) {
                       }}
                     >
                       <Heart fill={isLiked(i.id) ? "#f91880" : "none"} />
-                      {i.likes + (isLiked(i.id) ? 1 : 0)}
+                      {formatSocialCount(i.likes + (isLiked(i.id) ? 1 : 0))}
                     </button>
-                    <span>
-                      <BarChart2 />
-                      {i.meta.views || "—"}
-                    </span>
+                    {i.meta.views !== "" && (
+                      <span>
+                        <BarChart2 />
+                        {i.meta.views || "—"}
+                      </span>
+                    )}
                     <button
                       aria-label={"收藏" + i.title}
                       aria-pressed={isSaved(i.id)}

@@ -19,6 +19,7 @@ import {
   Circle,
 } from "lucide-react";
 import { useSkinState } from "../skinState";
+import { commentCount, repostCount, formatSocialCount } from "./socialMetrics";
 import { RichText } from "../RichText";
 import { Avatar, Media, meta } from "./shared";
 import type { Item, UiValue } from "../schema";
@@ -52,6 +53,12 @@ export function SocialDetail(p: {
     [copied, setCopied] = useState(false);
   const comments = [...item.comments, ...extra],
     replies = sort ? [...comments].reverse() : comments;
+  const totalComments = weibo
+    ? comments.length
+    : commentCount(item, extra.length);
+  const displayCount = weibo ? count : formatSocialCount;
+  const reposted =
+    Array.isArray(p.ui?.mymyXReposts) && p.ui.mymyXReposts.includes(item.id);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(item.body);
@@ -71,11 +78,13 @@ export function SocialDetail(p: {
     <div className="post-detail-actions">
       <button aria-label="查看评论" onClick={() => setTab("评论")}>
         <MessageCircle />
-        {count(comments.length)}
+        {displayCount(totalComments)}
       </button>
       <button aria-label="查看转发" onClick={() => setTab("转发")}>
         <Repeat2 />
-        {meta(item, "reposts", "0")}
+        {weibo
+          ? meta(item, "reposts", "0")
+          : formatSocialCount(repostCount(item) + (reposted ? 1 : 0))}
       </button>
       <button
         aria-label="喜欢帖子"
@@ -86,7 +95,7 @@ export function SocialDetail(p: {
           fill={liked ? "#f91880" : "none"}
           color={liked ? "#f91880" : undefined}
         />
-        {count(item.likes + (liked ? 1 : 0))}
+        {displayCount(item.likes + (liked ? 1 : 0))}
       </button>
       <button
         aria-label="收藏帖子"
@@ -170,7 +179,13 @@ export function SocialDetail(p: {
         ) : (
           <>
             <div className="x-post-metadata">
-              {item.time} · <b>{meta(item, "views", "0")}</b> 次查看
+              {item.time}
+              {meta(item, "views") && (
+                <>
+                  {" "}
+                  · <b>{meta(item, "views")}</b> 次查看
+                </>
+              )}
             </div>
             {actions}
           </>
@@ -241,7 +256,11 @@ export function SocialDetail(p: {
                 </article>
               );
             })}
-            {!replies.length && <p className="post-comments-empty">暂无评论</p>}
+            {!replies.length && (
+              <p className="post-comments-empty">
+                {!weibo && totalComments > 0 ? "未收录评论内容" : "暂无评论"}
+              </p>
+            )}
           </div>
         ) : (
           <p className="post-comments-empty">
